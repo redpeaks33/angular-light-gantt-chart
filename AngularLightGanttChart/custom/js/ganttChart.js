@@ -91,27 +91,155 @@
                 //$scope.stage_sub.addChild(diamondShape);
 
             }
-            let shape;
+            let termContainer;
+            let centerRectangle;
+            let leftEdge;
+            let rightEdge;
+            const EDGE_WIDTH = 10;
+            const CENTER_RECTANGLE_NAME = 'CENTER_RECTANGLE'
+            const LEFT_EDGE_NAME = 'LEFT_EDGE'
+            const RIGHT_EDGE_NAME = 'RIGHT_EDGE'
             function createRectangle(i) {
-                var g = new createjs.Graphics();
-                g.f("Pink").rr(0, calculateYPosition(i) + 3, 100, tableSizeInfo.rowHeight - 6, 5);
-                shape = new createjs.Shape(g);
-                setEventListner(shape);
-                $scope.stage.addChild(shape);
-            }
-            function calculateYPosition(index)
-            {
-                return (tableSizeInfo.headerHeight) +
-                (tableSizeInfo.rowHeight - 1) * index;
+                //var g = new createjs.Graphics();
+                //g.f("Green").rc(0, calculateYPosition(i) + 3, 10, tableSizeInfo.rowHeight - 6, 5,0,0,5);
+                //rectangle = new createjs.Shape(g);
+                //setRectangleEventListner(rectangle);
+                //$scope.stage.addChild(rectangle);
+
+                //var g = new createjs.Graphics();
+                //g.f("Pink").dr(10, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 6);
+                //leftEdge = new createjs.Shape(g);
+                //setLeftEdgeEventListner(leftEdge);
+                //$scope.stage.addChild(leftEdge);
+
+                //var g = new createjs.Graphics();
+                //g.f("Green").rc(100 - 20 + 10, calculateYPosition(i) + 3, 10, tableSizeInfo.rowHeight - 6, 0,5,5,0);
+                //rightEdge = new createjs.Shape(g);
+                //setRightEdgeEventListner(rightEdge);
+                //$scope.stage.addChild(rightEdge);
+
+                var termContainer = new createjs.Container();
+                $scope.stage.addChild(termContainer);
+
+                leftEdge = new createjs.Shape();
+                leftEdge.name = 'LEFT_EDGE'
+                leftEdge.graphics.f("Green").rc(100, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 5, 0, 0, 5);
+
+                centerRectangle = new createjs.Shape();
+                centerRectangle.name = 'CENTER_RECTANGLE'
+                centerRectangle.graphics.f("Pink").dr(100 + EDGE_WIDTH, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 6);
+
+                rightEdge = new createjs.Shape();
+                rightEdge.name = 'RIGHT_EDGE'
+                rightEdge.graphics.f("Green").rc(100 + 100 - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 0, 5, 5, 0);
+
+                termContainer.addChild(leftEdge);
+                termContainer.addChild(centerRectangle);
+                termContainer.addChild(rightEdge);
+
+                setRectangleEventListner(termContainer);
+                //var g = new createjs.Graphics();
+                //g.f("Green").rc(100, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 5, 0, 0, 5);
+                //g.f("Pink").dr(100+EDGE_WIDTH, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 6);
+                //g.f("Green").rc(100+ 100 - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 0, 5, 5, 0);
+                //rectangle = new createjs.Shape(g);
+                //setRectangleEventListner(rectangle);
+                //$scope.stage.addChild(rectangle);
             }
 
-            function setEventListner(shape) {
-                shape.addEventListener("mousedown", function (e) {
-                    dragPointX = $scope.stage.mouseX - e.target.x;
+            let dragStartPointX;
+            $scope.dragStartPointX = 0;
+            $scope.RECTANGLE_WIDTH = 0;
+            $scope.START_POS_X = 0;
+            function setRectangleEventListner(element) {
+                element.addEventListener("mousedown", function (e) {
+                    $scope.stagemouseX = $scope.stage.mouseX;
+                    $scope.eTargetX = e.target.x;
+                    $scope.$apply();
+                    //1.Check if click position is a left edge or a main rectangle or a right edge 
+
+                    if (e.target.name === CENTER_RECTANGLE_NAME) {
+                        dragStartPointX = $scope.stage.mouseX - e.target.x;
+                    }
+                    else if (e.target.name === LEFT_EDGE_NAME || e.target.name === RIGHT_EDGE_NAME) {
+                        dragStartPointX = $scope.stage.mouseX - e.target.x;
+
+                        $scope.START_POS_X = _.filter(e.target.parent.children, function (n) {
+                            return n.name == CENTER_RECTANGLE_NAME;
+                        })[0].graphics._instructions[1].x;
+
+                        $scope.RECTANGLE_WIDTH = _.filter(e.target.parent.children, function (n) {
+                            return n.name == CENTER_RECTANGLE_NAME;
+                        })[0].graphics._instructions[1].w;
+                    }
+                    //e.target.x += 100;
+                    // 表示オブジェクトはマウス座標に追随する
+                    //e.target.x = stage.mouseX;
+
+                    
+                    //dragPointX = $scope.stage.mouseX - e.rawX;
                 });
-                shape.addEventListener("pressmove", function (e) {
-                    e.target.x = $scope.stage.mouseX - dragPointX;
+
+                //Moving Size -> $scope.stage.mouseX - dragStartPointX
+                element.addEventListener("pressmove", function (e) {
+                    if (e.target.name === LEFT_EDGE_NAME) {
+                        _.each(e.target.parent.children, function (n) {
+                            _.each(e.target.parent.children, function (n) {
+                                if (n.name === CENTER_RECTANGLE_NAME) {
+                                    n.graphics._instructions[1].x = ($scope.stage.mouseX - dragStartPointX) + $scope.START_POS_X;
+                                    n.graphics._instructions[1].w = (-1 * ($scope.stage.mouseX - dragStartPointX)) + $scope.RECTANGLE_WIDTH;
+                                }
+                                else if (n.name === LEFT_EDGE_NAME) {
+                                    n.x = $scope.stage.mouseX - dragStartPointX
+                                }
+                            });
+                        });
+                    }
+                    else if (e.target.name === CENTER_RECTANGLE_NAME) {
+                        //Move x position of LeftEdge and CenterRectangle and Right Edge. No change center rectangle width.
+                        _.each(e.target.parent.children, function (n) {
+                            n.x = $scope.stage.mouseX - dragStartPointX
+                        });
+                    }
+                    else if (e.target.name === RIGHT_EDGE_NAME) {
+                        _.each(e.target.parent.children, function (n) {
+                            if (n.name === CENTER_RECTANGLE_NAME) {
+                                n.graphics.clear().beginFill('Red').drawRect(0, 0, ($scope.stage.mouseX - dragStartPointX) + $scope.RECTANGLE_WIDTH, 300).endFill();
+                                //n.graphics._instructions[1].w = ($scope.stage.mouseX - dragStartPointX) + $scope.RECTANGLE_WIDTH;
+                            }
+                            else if (n.name === RIGHT_EDGE_NAME) {
+                                n.x = $scope.stage.mouseX - dragStartPointX
+                            }
+                        });
+                    }
                 });
+
+                element.addEventListener("mouseup", function (e) {
+                    //e.target.x = $scope.stage.mouseX - dragPointX;
+                    //e.rawX = $scope.stage.mouseX - dragPointX;
+                });
+            }
+
+            //function setLeftEdgeEventListner(element) {
+            //    element.addEventListener("mousedown", function (e) {
+            //        dragPointX = $scope.stage.mouseX - e.target.x;
+            //    });
+            //    element.addEventListener("pressmove", function (e) {
+            //        e.target.x = $scope.stage.mouseX - dragPointX;
+            //    });
+            //}
+
+            //function setRightEdgeEventListner(element) {
+            //    element.addEventListener("mousedown", function (e) {
+            //        dragPointX = $scope.stage.mouseX - e.target.x;
+            //    });
+            //    element.addEventListener("pressmove", function (e) {
+            //        e.target.x = $scope.stage.mouseX - dragPointX;
+            //    });
+            //}
+
+            function calculateYPosition(index) {
+                return (tableSizeInfo.headerHeight) + (tableSizeInfo.rowHeight - 1) * index;
             }
 
             $scope.$on('setTableSize', function (e, sizeInfo,collection) {

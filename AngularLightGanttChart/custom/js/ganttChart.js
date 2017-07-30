@@ -119,6 +119,7 @@
                 //$scope.stage.addChild(rightEdge);
 
                 var termContainer = new createjs.Container();
+                termContainer.chartIndex = i;
                 $scope.stage.addChild(termContainer);
 
                 leftEdge = new createjs.Shape();
@@ -150,74 +151,83 @@
             let dragStartPointX;
             $scope.dragStartPointX = 0;
             $scope.RECTANGLE_WIDTH = 0;
-            $scope.START_POS_X = 0;
+            $scope.RECTANGLE_POS_X = 0;
+
             function setRectangleEventListner(element) {
                 element.addEventListener("mousedown", function (e) {
                     $scope.stagemouseX = $scope.stage.mouseX;
                     $scope.eTargetX = e.target.x;
                     $scope.$apply();
                     //1.Check if click position is a left edge or a main rectangle or a right edge 
-
-                    if (e.target.name === CENTER_RECTANGLE_NAME) {
-                        dragStartPointX = $scope.stage.mouseX - e.target.x;
-                    }
-                    else if (e.target.name === LEFT_EDGE_NAME || e.target.name === RIGHT_EDGE_NAME) {
-                        dragStartPointX = $scope.stage.mouseX - e.target.x;
-
-                        $scope.START_POS_X = _.filter(e.target.parent.children, function (n) {
+                    dragStartPointX = $scope.stage.mouseX - e.target.x;
+                        $scope.RECTANGLE_POS_X = _.filter(e.target.parent.children, function (n) {
                             return n.name == CENTER_RECTANGLE_NAME;
                         })[0].graphics._instructions[1].x;
 
                         $scope.RECTANGLE_WIDTH = _.filter(e.target.parent.children, function (n) {
                             return n.name == CENTER_RECTANGLE_NAME;
                         })[0].graphics._instructions[1].w;
-                    }
-                    //e.target.x += 100;
-                    // 表示オブジェクトはマウス座標に追随する
-                    //e.target.x = stage.mouseX;
-
-                    
-                    //dragPointX = $scope.stage.mouseX - e.rawX;
                 });
 
                 //Moving Size -> $scope.stage.mouseX - dragStartPointX
                 element.addEventListener("pressmove", function (e) {
+                    let chartIndex = e.target.parent.chartIndex;
+                    let newRectanglePos_x = null;
+                    let newLeftEdgePos_x = null;
+                    let newRightEdgePos_x = null;
+                    let newWidth = null;
+
                     if (e.target.name === LEFT_EDGE_NAME) {
-                        _.each(e.target.parent.children, function (n) {
-                            _.each(e.target.parent.children, function (n) {
-                                if (n.name === CENTER_RECTANGLE_NAME) {
-                                    n.graphics._instructions[1].x = ($scope.stage.mouseX - dragStartPointX) + $scope.START_POS_X;
-                                    n.graphics._instructions[1].w = (-1 * ($scope.stage.mouseX - dragStartPointX)) + $scope.RECTANGLE_WIDTH;
-                                }
-                                else if (n.name === LEFT_EDGE_NAME) {
-                                    n.x = $scope.stage.mouseX - dragStartPointX
-                                }
-                            });
-                        });
+                        //Move x position of Left Edge
+                        newRectanglePos_x = $scope.RECTANGLE_POS_X + ($scope.stage.mouseX - dragStartPointX);
+                        newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                        newWidth = $scope.RECTANGLE_WIDTH - ($scope.stage.mouseX - dragStartPointX);
+                        newRightEdgePos_x = newRectanglePos_x + newWidth;
                     }
                     else if (e.target.name === CENTER_RECTANGLE_NAME) {
                         //Move x position of LeftEdge and CenterRectangle and Right Edge. No change center rectangle width.
-                        _.each(e.target.parent.children, function (n) {
-                            n.x = $scope.stage.mouseX - dragStartPointX
-                        });
+                        newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
+                        newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                        newWidth = $scope.RECTANGLE_WIDTH;
+                        newRightEdgePos_x = newRectanglePos_x + newWidth;
                     }
                     else if (e.target.name === RIGHT_EDGE_NAME) {
-                        _.each(e.target.parent.children, function (n) {
-                            if (n.name === CENTER_RECTANGLE_NAME) {
-                                n.graphics.clear().beginFill('Red').drawRect(0, 0, ($scope.stage.mouseX - dragStartPointX) + $scope.RECTANGLE_WIDTH, 300).endFill();
-                                //n.graphics._instructions[1].w = ($scope.stage.mouseX - dragStartPointX) + $scope.RECTANGLE_WIDTH;
-                            }
-                            else if (n.name === RIGHT_EDGE_NAME) {
-                                n.x = $scope.stage.mouseX - dragStartPointX
-                            }
-                        });
+                        //Move x position of Right Edge
+                        newRectanglePos_x = $scope.RECTANGLE_POS_X;
+                        newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                        newWidth = $scope.RECTANGLE_WIDTH + ($scope.stage.mouseX - dragStartPointX);
+                        newRightEdgePos_x = newRectanglePos_x + newWidth;
+
+                    }
+                    if (newWidth >= 0) {
+                    _.each(e.target.parent.children, function (n) {
+                        if (n.name === LEFT_EDGE_NAME) {
+                            n.graphics.clear().f("Green").rc(newLeftEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 5, 0, 0, 5);
+                        }
+                        else if (n.name === CENTER_RECTANGLE_NAME) {
+                            n.graphics.clear().f("Pink").dr(newRectanglePos_x, calculateYPosition(chartIndex) + 3, newWidth, tableSizeInfo.rowHeight - 6);
+                        }
+                        else if (n.name === RIGHT_EDGE_NAME) {
+                            n.graphics.clear().f("Green").rc(newRightEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 0, 5, 5, 0);
+                        }
+                    });
                     }
                 });
 
-                element.addEventListener("mouseup", function (e) {
-                    //e.target.x = $scope.stage.mouseX - dragPointX;
-                    //e.rawX = $scope.stage.mouseX - dragPointX;
-                });
+                //element.addEventListener("mouseup", function (e) {
+                //    _.each(e.target.parent.children, function (n) {
+                //        if (n.name === LEFT_EDGE_NAME) {
+                //        }
+                //        else if (n.name === CENTER_RECTANGLE_NAME) {
+                //        }
+                //        else if (n.name === RIGHT_EDGE_NAME) {
+                //            n.graphics._instructions[1].x = ($scope.stage.mouseX - dragStartPointX) + $scope.START_POS_X;
+                //            n.graphics._instructions[1].w = (-1 * ($scope.stage.mouseX - dragStartPointX)) + $scope.RECTANGLE_WIDTH;
+                //        }
+                //    });
+                //    //Update position and width of LeftEdge and CenterRectangle and Right Edge. 
+                //    //n.graphics.clear().beginFill('Red').drawRect(0, 0, ($scope.stage.mouseX - dragStartPointX) + $scope.RECTANGLE_WIDTH, 300).endFill();
+                //});
             }
 
             //function setLeftEdgeEventListner(element) {

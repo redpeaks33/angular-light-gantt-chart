@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+    <!--angular-->
+    <script src="/scripts/angular.min.js"></script>
+    <!--smart table-->
+    <script src="/scripts/smarttable/smart-table.js"></script>
+    <!--jquery-->
+    <script src="/scripts/jquery-1.9.1.min.js"></script>
+    <!--bootstrap-->
+    <script src="/scripts/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="Content/bootstrap-theme.min.css">
+    <!--fontawesome-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--less-->
+    <script src="/lib/less-less.js-4a0026e/dist/less.min.js"></script>
+    <!--underscore-->
+    <script src="/scripts/underscore.min.js"></script>
+    <!--create js-->
+    <script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>
+
+    <!----------------------------------------------------------------------------------------------------------------------->
+    <link rel="stylesheet" type="text/css" href="/custom/css/ganttBaseContainer.min.css" />
+    <link rel="stylesheet" type="text/css" href="/custom/css/ganttTerm.min.css" />
+    <link rel="stylesheet" type="text/css" href="/custom/css/ganttTable.min.css" />
+    <link rel="stylesheet" type="text/css" href="/custom/css/ganttChart.min.css" />
+    <title></title>
+
+    <script src="/custom/js/baseController.js"></script>
+    <script src="/custom/js/ganttBaseContainer.js"></script>
+    <script src="/custom/js/ganttTerm.js"></script>
+    <script src="/custom/js/ganttChart.js"></script>
+    <script src="/custom/js/ganttTable.js"></script>
+    <script src="/custom/js/timePosSynchronizerService.js"></script>
+    <script src="/lib/ngInfiniteScroll-1.0.0/build/ng-infinite-scroll.js"></script>
+
+    <!--infinity scroll-->
+    <script src="/custom/js/infinityscroll/infinite-scroll.js"></script>
+</head>
+<body  ng-app="app">
+    <div ng-controller="baseController" ng-init="initialize()">
+        <gantt-base-container></gantt-base-container>
+    </div>
+</body>
+</html>

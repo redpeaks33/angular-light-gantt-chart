@@ -1,0 +1,29 @@
+﻿第３弾 8/6
+一週間ごとにずらす機能
+Filter、Sortと連動
+編集モード＆閲覧モード
+
+
+第２弾　7/30
+OK 行の高さに応じてCanvas作成
+ドラッグ期間設定　片方だけ伸ばす
+時間背景Grid作成
+TerｍContorller
+	前月、後月、現在月
+	Chart StartTime EndTime設定
+	TermPosSynchronizerService
+TableController
+	Add
+	Create
+	Delete
+	D&D Row位置変更
+ChartController
+	Normal,Edit,全体Hover,端Hover
+	D&D	
+
+
+
+第１弾　7/27 OK!
+テーブル作成
+Canvas作成
+ドラッグ可能

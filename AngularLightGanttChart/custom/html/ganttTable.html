@@ -1,0 +1,30 @@
+﻿<div class="ganttTableContainer">
+    <div class="table-container">
+        <table st-table="displayed" st-safe-src="collection" class="table table-bordered table-striped table-condensed">
+            {{displayed.length}}
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>Nationality</th>
+                    <th>Education</th>
+                    <th>Start</th>
+                    <th>End</th>
+                </tr>
+            </thead>
+            <tbody scroll>
+                <tr ng-repeat="row in collection | limitTo:totalDisplayed">
+                    <td>{{row.id}}</td>
+                    <td>{{row.firstName.name}}</td>
+                    <td>{{row.lastName.name | uppercase}}</td>
+                    <td>{{row.nationality.name}}</td>
+                    <td>{{row.education.name}}</td>
+                    <td>{{row.start}}</td>
+                    <td>{{row.end}}</td>
+                </tr>
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+    </div>
+</div>

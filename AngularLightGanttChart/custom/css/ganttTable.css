@@ -1,0 +1,20 @@
+﻿.ganttTableContainer {
+  margin-right: 0px;
+  border: 1px solid #00ff90;
+}
+.tablecustom {
+  height: 100vh;
+  overflow: scroll;
+  background-color: white;
+  border: 1px solid red;
+}
+table {
+  height: 10vh;
+}
+.table-container {
+  min-height: 80vh;
+  max-height: 80vh;
+}
+tbody {
+  overflow-y: visible;
+}

@@ -1,0 +1,22 @@
+﻿[
+  {
+    "outputFile": "custom/css/base.css",
+    "inputFile": "custom/css/base.less"
+  },
+  {
+    "outputFile": "custom/css/ganttChart.css",
+    "inputFile": "custom/css/ganttChart.less"
+  },
+  {
+    "outputFile": "custom/css/ganttTable.css",
+    "inputFile": "custom/css/ganttTable.less"
+  },
+  {
+    "outputFile": "custom/css/ganttBaseContainer.css",
+    "inputFile": "custom/css/ganttBaseContainer.less"
+  },
+  {
+    "outputFile": "custom/css/ganttTerm.css",
+    "inputFile": "custom/css/ganttTerm.less"
+  }
+]

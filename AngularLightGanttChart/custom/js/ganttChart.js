@@ -10,10 +10,13 @@
             height: '=',
         },
         templateUrl: '/custom/html/ganttChart.html',
-        controller: ['$scope', '$timeout', 'TimePosSynchronizerService', function ($scope, $timeout, TimePosSynchronizerService) {
+        controller: ['$scope', '$timeout', 'DrawGridService', 'TimePosSynchronizerService',
+            function ($scope, $timeout, DrawGridService, TimePosSynchronizerService) {
             var chartSizeInfo = {
                 canvasSizeX: $scope.width,
                 canvasSizeY: $scope.height,
+                axisXPadding:0,
+                axisYPadding:0,
                 xMax: $scope.width,
                 xMin: 0,
                 yMax: $scope.height,
@@ -47,7 +50,7 @@
                 ctx_back = $scope.stage_background.canvas.getContext('2d');
 
                 //drawWhiteCanvas();
-                //drawGrid();
+                DrawGridService.drawAxis(ctx_back, chartSizeInfo);
                 drawSubContents();
             }
 
@@ -60,37 +63,8 @@
                 for (var i = 0; i < tableSizeInfo.rowCount; i++) {
                     createRectangle(i);
                 }
-                //g.s("Blue").setStrokeDash([4, 2], 0).setStrokeStyle(1); //color dot thickness
-                //g.drawCircle(chartSizeInfo.canvasSizeX / 2, chartSizeInfo.canvasSizeY / 2, 200);
-
-
-                //var s = new createjs.Shape(g);
-                //s.draw(ctx);
-
-                ///////////////////////////////////////////////
-                //g = new createjs.Graphics();
-
-                //g.s("Green").setStrokeDash([8, 4], 0).setStrokeStyle(1); //color dot thickness
-                //g.drawCircle(chartSizeInfo.canvasSizeX / 2, chartSizeInfo.canvasSizeY / 2 + 300, 200);
-                //g.beginFill("Pink").drawCircle(40, 40, 30);
-
-                //circleShape = new createjs.Shape(g);
-                //$scope.stage.addChild(circleShape);
-                //$scope.stage.update();
-                //g = new createjs.Graphics();
-                //////////////////////////////////////////////////////////////////////////////////
-                //g.s("Red").setStrokeDash([8, 4], 0).setStrokeStyle(1); //color dot thickness
-                //g.beginFill("Yellow").drawRect(0, 0, 120, 120);
-                //g.beginFill("blue").drawRect(10, 10, 100, 100);
-
-                //diamondShape = new createjs.Shape(g);
-                //diamondShape.regX = diamondShape.regY = 60;
-                //diamondShape.rotation = 45;
-                //diamondShape.x = 100;
-                //diamondShape.y = 100;
-                //$scope.stage_sub.addChild(diamondShape);
-
             }
+
             let termContainer;
             let centerRectangle;
             let leftEdge;
@@ -99,24 +73,8 @@
             const CENTER_RECTANGLE_NAME = 'CENTER_RECTANGLE'
             const LEFT_EDGE_NAME = 'LEFT_EDGE'
             const RIGHT_EDGE_NAME = 'RIGHT_EDGE'
+
             function createRectangle(i) {
-                //var g = new createjs.Graphics();
-                //g.f("Green").rc(0, calculateYPosition(i) + 3, 10, tableSizeInfo.rowHeight - 6, 5,0,0,5);
-                //rectangle = new createjs.Shape(g);
-                //setRectangleEventListner(rectangle);
-                //$scope.stage.addChild(rectangle);
-
-                //var g = new createjs.Graphics();
-                //g.f("Pink").dr(10, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 6);
-                //leftEdge = new createjs.Shape(g);
-                //setLeftEdgeEventListner(leftEdge);
-                //$scope.stage.addChild(leftEdge);
-
-                //var g = new createjs.Graphics();
-                //g.f("Green").rc(100 - 20 + 10, calculateYPosition(i) + 3, 10, tableSizeInfo.rowHeight - 6, 0,5,5,0);
-                //rightEdge = new createjs.Shape(g);
-                //setRightEdgeEventListner(rightEdge);
-                //$scope.stage.addChild(rightEdge);
 
                 var termContainer = new createjs.Container();
                 termContainer.chartIndex = i;
@@ -139,13 +97,6 @@
                 termContainer.addChild(rightEdge);
 
                 setRectangleEventListner(termContainer);
-                //var g = new createjs.Graphics();
-                //g.f("Green").rc(100, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 5, 0, 0, 5);
-                //g.f("Pink").dr(100+EDGE_WIDTH, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 6);
-                //g.f("Green").rc(100+ 100 - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 0, 5, 5, 0);
-                //rectangle = new createjs.Shape(g);
-                //setRectangleEventListner(rectangle);
-                //$scope.stage.addChild(rectangle);
             }
 
             let dragStartPointX;
@@ -213,40 +164,7 @@
                     });
                     }
                 });
-
-                //element.addEventListener("mouseup", function (e) {
-                //    _.each(e.target.parent.children, function (n) {
-                //        if (n.name === LEFT_EDGE_NAME) {
-                //        }
-                //        else if (n.name === CENTER_RECTANGLE_NAME) {
-                //        }
-                //        else if (n.name === RIGHT_EDGE_NAME) {
-                //            n.graphics._instructions[1].x = ($scope.stage.mouseX - dragStartPointX) + $scope.START_POS_X;
-                //            n.graphics._instructions[1].w = (-1 * ($scope.stage.mouseX - dragStartPointX)) + $scope.RECTANGLE_WIDTH;
-                //        }
-                //    });
-                //    //Update position and width of LeftEdge and CenterRectangle and Right Edge. 
-                //    //n.graphics.clear().beginFill('Red').drawRect(0, 0, ($scope.stage.mouseX - dragStartPointX) + $scope.RECTANGLE_WIDTH, 300).endFill();
-                //});
             }
-
-            //function setLeftEdgeEventListner(element) {
-            //    element.addEventListener("mousedown", function (e) {
-            //        dragPointX = $scope.stage.mouseX - e.target.x;
-            //    });
-            //    element.addEventListener("pressmove", function (e) {
-            //        e.target.x = $scope.stage.mouseX - dragPointX;
-            //    });
-            //}
-
-            //function setRightEdgeEventListner(element) {
-            //    element.addEventListener("mousedown", function (e) {
-            //        dragPointX = $scope.stage.mouseX - e.target.x;
-            //    });
-            //    element.addEventListener("pressmove", function (e) {
-            //        e.target.x = $scope.stage.mouseX - dragPointX;
-            //    });
-            //}
 
             function calculateYPosition(index) {
                 return (tableSizeInfo.headerHeight) + (tableSizeInfo.rowHeight - 1) * index;

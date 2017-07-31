@@ -1,5 +1,6 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="../custom/js/baseController.js" />
+/// <reference path="../custom/js/drawGridService.js" />
 /// <reference path="../custom/js/ganttBaseContainer.js" />
 /// <reference path="../custom/js/ganttChart.js" />
 /// <reference path="../custom/js/ganttTable.js" />

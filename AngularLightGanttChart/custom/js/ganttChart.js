@@ -10,8 +10,8 @@
             height: '=',
         },
         templateUrl: '/custom/html/ganttChart.html',
-        controller: ['$scope', '$timeout', 'DrawGridService', 'TimePosSynchronizerService',
-            function ($scope, $timeout, DrawGridService, TimePosSynchronizerService) {
+        controller: ['$scope', '$timeout', 'DrawGridService', 'DrawDateService','TimePosSynchronizerService',
+            function ($scope, $timeout, DrawGridService, DrawDateService, TimePosSynchronizerService) {
             var chartSizeInfo = {
                 canvasSizeX: $scope.width,
                 canvasSizeY: $scope.height,
@@ -50,7 +50,8 @@
                 ctx_back = $scope.stage_background.canvas.getContext('2d');
 
                 //drawWhiteCanvas();
-                DrawGridService.drawAxis(ctx_back, chartSizeInfo);
+                DrawGridService.drawAxis(ctx_back, chartSizeInfo, tableSizeInfo);
+                DrawDateService.drawDate(ctx_back, chartSizeInfo, tableSizeInfo);
                 drawSubContents();
             }
 
@@ -82,15 +83,15 @@
 
                 leftEdge = new createjs.Shape();
                 leftEdge.name = 'LEFT_EDGE'
-                leftEdge.graphics.f("Green").rc(100, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 5, 0, 0, 5);
+                leftEdge.graphics.f("Green").rc(100, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
 
                 centerRectangle = new createjs.Shape();
                 centerRectangle.name = 'CENTER_RECTANGLE'
-                centerRectangle.graphics.f("Pink").dr(100 + EDGE_WIDTH, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 6);
+                centerRectangle.graphics.f("Pink").dr(100 + EDGE_WIDTH, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 7);
 
                 rightEdge = new createjs.Shape();
                 rightEdge.name = 'RIGHT_EDGE'
-                rightEdge.graphics.f("Green").rc(100 + 100 - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 0, 5, 5, 0);
+                rightEdge.graphics.f("Green").rc(100 + 100 - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
 
                 termContainer.addChild(leftEdge);
                 termContainer.addChild(centerRectangle);
@@ -153,13 +154,13 @@
                     if (newWidth >= 0) {
                     _.each(e.target.parent.children, function (n) {
                         if (n.name === LEFT_EDGE_NAME) {
-                            n.graphics.clear().f("Green").rc(newLeftEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 5, 0, 0, 5);
+                            n.graphics.clear().f("Green").rc(newLeftEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
                         }
                         else if (n.name === CENTER_RECTANGLE_NAME) {
-                            n.graphics.clear().f("Pink").dr(newRectanglePos_x, calculateYPosition(chartIndex) + 3, newWidth, tableSizeInfo.rowHeight - 6);
-                        }
+                            n.graphics.clear().f("Pink").dr(newRectanglePos_x, calculateYPosition(chartIndex) + 3, newWidth, tableSizeInfo.rowHeight - 7);
+                        }///
                         else if (n.name === RIGHT_EDGE_NAME) {
-                            n.graphics.clear().f("Green").rc(newRightEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 6, 0, 5, 5, 0);
+                            n.graphics.clear().f("Green").rc(newRightEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
                         }
                     });
                     }

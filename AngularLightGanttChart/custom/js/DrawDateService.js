@@ -1,13 +1,30 @@
-﻿main.service('DrawGridService', function () {
+﻿main.service('DrawDateService', function () {
     //#region draw axis
-    this.drawAxis = function (context, chartSizeInfo, tableSizeInfo) {
+    this.drawDate = function (context, chartSizeInfo, tableSizeInfo) {
         let g = new createjs.Graphics();
 
-        drawAxisX(g, chartSizeInfo, tableSizeInfo);
-        drawAxisY(g, chartSizeInfo, tableSizeInfo);
+        drawDay(g, chartSizeInfo, tableSizeInfo,context)
+        drawWeek(g, chartSizeInfo, tableSizeInfo,context)
+        //drawAxisX(g, chartSizeInfo, tableSizeInfo);
+        //drawAxisY(g, chartSizeInfo, tableSizeInfo);
 
         var s = new createjs.Shape(g);
         s.draw(context);
+    }
+    function drawDay(g, chartSizeInfo, tableSizeInfo, context) {
+        context.textAlign = 'center';
+        context.font = "16px Georgia";
+        for(var i = 0;i<31;i++){
+            context.fillText(i, i*30 + 15 , 50);
+        }
+    }
+    
+    function drawWeek(g, chartSizeInfo, tableSizeInfo, context) {
+        context.textAlign = 'center';
+        context.font = "16px Georgia";
+        for (var i = 0; i < 7; i++) {
+            context.fillText(i, i * 210 + 105, 25);
+        }
     }
 
     function drawAxisX(g, chartSizeInfo, tableSizeInfo) {

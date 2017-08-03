@@ -1,4 +1,4 @@
-﻿var main = angular.module("app", ['infinite-scroll']);
+﻿var main = angular.module("app", ['infinite-scroll', 'angularMoment']);
 
 main.controller('baseController', ['$scope', '$timeout', '$window', function ($scope, $timeout, $window) {
     $scope.collection = [];

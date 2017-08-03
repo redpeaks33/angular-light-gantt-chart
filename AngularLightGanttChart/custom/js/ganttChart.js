@@ -23,6 +23,7 @@
                 yMin: 0,
             };
             let tableSizeInfo = {};
+            let termSizeInfo = {};
             //initialize();
             var ctx = {};
             var ctx_back = {};
@@ -37,7 +38,7 @@
                 });
             }
             function handleTick() {
-                $scope.stage.update(); 
+                $scope.stage.update();
             }
             //#region initialize canvas
             function initializeCanvas(canvasID) {
@@ -50,17 +51,28 @@
                 ctx_back = $scope.stage_background.canvas.getContext('2d');
 
                 //drawWhiteCanvas();
-                DrawGridService.drawAxis(ctx_back, chartSizeInfo, tableSizeInfo);
-                DrawDateService.drawDate(ctx_back, chartSizeInfo, tableSizeInfo);
-                drawSubContents();
+                drawBackgournd();
+                drawContents();
             }
 
+            function drawBackgournd() {
+                if (!termSizeInfo.startDate)
+                {
+                    termSizeInfo = {
+                        startDate: moment().add(-1, 'weeks').day(1),
+                        termDays: 35
+                    };
+                }
+                ctx_back.clearRect(0, 0, chartSizeInfo.canvasSizeX, chartSizeInfo.canvasSizeY);
+                DrawDateService.drawDate(ctx_back, chartSizeInfo, tableSizeInfo, termSizeInfo);
+                DrawGridService.drawAxis(ctx_back, chartSizeInfo, tableSizeInfo);
+            }
 
             //#endregion
 
             var circleShape;
             var rectangleShape;
-            function drawSubContents() {
+            function drawContents() {
                 for (var i = 0; i < tableSizeInfo.rowCount; i++) {
                     createRectangle(i);
                 }
@@ -177,7 +189,10 @@
             })
             $scope.$on('setItemInfo', function (e, collection) {
                 $scope.collection = collection;
-                TimePosSynchronizerService.myFunc(100);
+            });
+            $scope.$on('setTermInfo', function (e, termInfo) {
+                termSizeInfo = termInfo;
+                drawBackgournd();
             });
         }],
     };

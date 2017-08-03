@@ -73,6 +73,8 @@
             var circleShape;
             var rectangleShape;
             function drawContents() {
+                $scope.stage.removeAllChildren();
+                $scope.stage.update();
                 for (var i = 0; i < tableSizeInfo.rowCount; i++) {
                     createRectangle(i);
                 }
@@ -93,17 +95,23 @@
                 termContainer.chartIndex = i;
                 $scope.stage.addChild(termContainer);
 
+                let itemDateInfo = {
+                    startDate : moment().add(5,'day').format(),
+                    endDate: moment().add(10, 'day').format(),
+                }
+                let itemLength = TimePosSynchronizerService.calculateItemLength(itemDateInfo, chartSizeInfo, termSizeInfo);
+
                 leftEdge = new createjs.Shape();
                 leftEdge.name = 'LEFT_EDGE'
-                leftEdge.graphics.f("Green").rc(100, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
+                leftEdge.graphics.f("Green").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
 
                 centerRectangle = new createjs.Shape();
                 centerRectangle.name = 'CENTER_RECTANGLE'
-                centerRectangle.graphics.f("Pink").dr(100 + EDGE_WIDTH, calculateYPosition(i) + 3, 100 - 20, tableSizeInfo.rowHeight - 7);
+                centerRectangle.graphics.f("Pink").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight - 7);
 
                 rightEdge = new createjs.Shape();
                 rightEdge.name = 'RIGHT_EDGE'
-                rightEdge.graphics.f("Green").rc(100 + 100 - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
+                rightEdge.graphics.f("Green").rc(itemLength.x + itemLength.w -20 +EDGE_WIDTH, calculateYPosition(i) +3, EDGE_WIDTH, tableSizeInfo.rowHeight -7, 0, 5, 5, 0);
 
                 termContainer.addChild(leftEdge);
                 termContainer.addChild(centerRectangle);
@@ -193,6 +201,7 @@
             $scope.$on('setTermInfo', function (e, termInfo) {
                 termSizeInfo = termInfo;
                 drawBackgournd();
+                drawContents();
             });
         }],
     };

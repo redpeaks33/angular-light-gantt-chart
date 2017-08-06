@@ -6,4 +6,12 @@
         
         return { x: paddingDay * dayWidth , w: termDay * dayWidth };
     }
+    this.setConvertedTerm = function (x, w, item, termSizeInfo)
+    {
+        //let startDate = termSizeInfo.startDate.
+
+        item.startDate = termSizeInfo.startDate.clone().add(Math.round(w / 30), 'day');
+        item.termDay = Math.round(w / 30);
+        alert(item.startDate.format() + ':' + item.termDay);
+    }
 });

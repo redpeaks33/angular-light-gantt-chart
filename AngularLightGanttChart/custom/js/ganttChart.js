@@ -75,9 +75,12 @@
             function drawContents() {
                 $scope.stage.removeAllChildren();
                 $scope.stage.update();
-                for (var i = 0; i < tableSizeInfo.rowCount; i++) {
-                    createRectangle(i);
-                }
+                //for (var i = 0; i < tableSizeInfo.rowCount; i++) {
+                //    createRectangle(i);
+                //}
+                _.each($scope.collection, function (n, i) {
+                    createRectangle(n,i);
+                });
             }
 
             let termContainer;
@@ -89,15 +92,16 @@
             const LEFT_EDGE_NAME = 'LEFT_EDGE'
             const RIGHT_EDGE_NAME = 'RIGHT_EDGE'
 
-            function createRectangle(i) {
+            function createRectangle(item,i) {
 
                 var termContainer = new createjs.Container();
                 termContainer.chartIndex = i;
                 $scope.stage.addChild(termContainer);
+                $scope.stage.enableMouseOver(20);
 
                 let itemDateInfo = {
-                    startDate : moment().add(5,'day').format(),
-                    endDate: moment().add(10, 'day').format(),
+                    startDate : item.start,
+                    endDate: item.end
                 }
                 let itemLength = TimePosSynchronizerService.calculateItemLength(itemDateInfo, chartSizeInfo, termSizeInfo);
 
@@ -124,8 +128,52 @@
             $scope.dragStartPointX = 0;
             $scope.RECTANGLE_WIDTH = 0;
             $scope.RECTANGLE_POS_X = 0;
+            $scope.NEW_POS_X = 0;
+            $scope.NEW_WIDTH = 0;
 
             function setRectangleEventListner(element) {
+                element.addEventListener("mouseover", function (e) {
+                    let i = e.target.parent.chartIndex;
+                    let item = $scope.collection[i];
+                    let itemDateInfo = {
+                        startDate: item.start,
+                        endDate: item.end
+                    }
+                    let itemLength = TimePosSynchronizerService.calculateItemLength(itemDateInfo, chartSizeInfo, termSizeInfo);
+
+                    if (e.target.name === LEFT_EDGE_NAME) {
+                        e.target.graphics.f("Red").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
+                    }
+                    else if (e.target.name === CENTER_RECTANGLE_NAME) {
+                        e.target.graphics.f("Red").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight - 7);
+                    }///
+                    else if (e.target.name === RIGHT_EDGE_NAME) {
+                        e.target.graphics.f("Red").rc(itemLength.x + itemLength.w - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
+                    }
+                });
+
+                element.addEventListener("mouseout", function (e) {
+                    let i = e.target.parent.chartIndex;
+                    let item = $scope.collection[i];
+                    let itemDateInfo = {
+                        startDate: item.start,
+                        endDate: item.end
+                    }
+                    let itemLength = TimePosSynchronizerService.calculateItemLength(itemDateInfo, chartSizeInfo, termSizeInfo);
+
+                    if (e.target.name === LEFT_EDGE_NAME) {
+                        e.target.graphics.f("Green").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
+                    }
+                    else if (e.target.name === CENTER_RECTANGLE_NAME) {
+                        e.target.graphics.f("Pink").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight - 7);
+                    }///
+                    else if (e.target.name === RIGHT_EDGE_NAME) {
+                        e.target.graphics.f("Green").rc(itemLength.x + itemLength.w - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
+                    }
+                });
+
+                //#region Change Item Size for Drag Event 
+                //Get Start Point for drag.
                 element.addEventListener("mousedown", function (e) {
                     $scope.stagemouseX = $scope.stage.mouseX;
                     $scope.eTargetX = e.target.x;
@@ -175,6 +223,7 @@
                     _.each(e.target.parent.children, function (n) {
                         if (n.name === LEFT_EDGE_NAME) {
                             n.graphics.clear().f("Green").rc(newLeftEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
+                            $scope.NEW_POS_X = newLeftEdgePos_x;
                         }
                         else if (n.name === CENTER_RECTANGLE_NAME) {
                             n.graphics.clear().f("Pink").dr(newRectanglePos_x, calculateYPosition(chartIndex) + 3, newWidth, tableSizeInfo.rowHeight - 7);
@@ -183,8 +232,55 @@
                             n.graphics.clear().f("Green").rc(newRightEdgePos_x, calculateYPosition(chartIndex) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
                         }
                     });
+                        $scope.NEW_WIDTH = newRightEdgePos_x - newLeftEdgePos_x;
                     }
                 });
+
+                element.addEventListener("pressup", function (e) {
+                    let chartIndex = e.target.parent.chartIndex;
+                    
+                    //let newRectanglePos_x = null;
+                    //let newLeftEdgePos_x = null;
+                    //let newRightEdgePos_x = null;
+                    //let newWidth = null;
+
+                    //_.each(e.target.parent.children, function (n) {
+                    //    if (n.name === CENTER_RECTANGLE_NAME) {
+                    //        newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
+                    //        newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                    //    }
+                    //    else if (e.target.name === RIGHT_EDGE_NAME) {
+                    //        newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
+                    //        newLeftEdgePos_x = newRectanglePos_x + EDGE_WIDTH;
+                    //    }
+                    //});
+                    //if (e.target.name === LEFT_EDGE_NAME) {
+                    //    //Move x position of Left Edge
+                    //    newRectanglePos_x = $scope.RECTANGLE_POS_X + ($scope.stage.mouseX - dragStartPointX);
+                    //    newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                    //    newWidth = $scope.RECTANGLE_WIDTH - ($scope.stage.mouseX - dragStartPointX);
+                    //    newRightEdgePos_x = newRectanglePos_x + newWidth;
+                    //}
+                    //else if (e.target.name === CENTER_RECTANGLE_NAME) {
+                    //    //Move x position of LeftEdge and CenterRectangle and Right Edge. No change center rectangle width.
+                    //    newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
+                    //    newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                    //    newWidth = $scope.RECTANGLE_WIDTH;
+                    //    newRightEdgePos_x = newRectanglePos_x + newWidth;
+                    //}
+                    //else if (e.target.name === RIGHT_EDGE_NAME) {
+                    //    //Move x position of Right Edge
+                    //    newRectanglePos_x = $scope.RECTANGLE_POS_X;
+                    //    newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
+                    //    newWidth = $scope.RECTANGLE_WIDTH + ($scope.stage.mouseX - dragStartPointX);
+                    //    newRightEdgePos_x = newRectanglePos_x + newWidth;
+
+                    //}
+                    if ($scope.NEW_WIDTH >= 0) {
+                        TimePosSynchronizerService.setConvertedTerm($scope.NEW_POS_X, $scope.NEW_WIDTH, $scope.collection[chartIndex], termSizeInfo);
+                    }
+                });
+                //#endregion 
             }
 
             function calculateYPosition(index) {

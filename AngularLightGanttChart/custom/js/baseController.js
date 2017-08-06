@@ -23,7 +23,7 @@ main.controller('baseController', ['$scope', '$timeout', '$window', function ($s
 
     //#region Random List
     function createRandomList() {
-        for (var j = 0; j < 500; j++) {
+        for (var j = 0; j < 10; j++) {
             $scope.collection.push(createRandomItem(j));
         };
         //column
@@ -42,6 +42,7 @@ main.controller('baseController', ['$scope', '$timeout', '$window', function ($s
         educationList = [{ id: 1, name: 'Doctorate' }, { id: 2, name: 'Master' }, { id: 3, name: 'Bachelor' }, { id: 4, name: 'High school' }];
 
     function createRandomItem(index) {
+
         var firstName = nameList[Math.floor(Math.random() * 5)],
           lastName = familyName[Math.floor(Math.random() * 5)],
           nationality = nationList[Math.floor(Math.random() * 3)],
@@ -53,12 +54,14 @@ main.controller('baseController', ['$scope', '$timeout', '$window', function ($s
             lastName: lastName,
             nationality: nationality,
             education: education,
-            start: new Date().getTime(),
-            end:new Date().getTime()
+            start: getRandomDate(moment(), moment().add(15,'days')),
+            end: getRandomDate(moment().add(16, 'days'), moment().add(25, 'days')),
         };
     }
     //#endregion Random List
-
+    function getRandomDate(s, e) {
+        return moment(s + Math.random() * (e - s));
+    }
 }]);
 
 main.directive('scroll', [function() {

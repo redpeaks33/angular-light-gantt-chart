@@ -6,7 +6,7 @@
         },
         templateUrl: '/custom/html/ganttTable.html',
         controller: ['$scope', '$rootScope', 'TimePosSynchronizerService', function ($scope, $rootScope, TimePosSynchronizerService) {
-            $scope.totalDisplayed = 40;
+            $scope.totalDisplayed = 10;
             $scope.$on('setChartData', function (e, data) {
                 $scope.collection = data;
                 $rootScope.$broadcast('setItemInfo', $scope.collection);

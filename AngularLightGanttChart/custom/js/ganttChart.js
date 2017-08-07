@@ -87,13 +87,12 @@
             let centerRectangle;
             let leftEdge;
             let rightEdge;
-            const EDGE_WIDTH = 10;
+            const EDGE_WIDTH = 20;
             const CENTER_RECTANGLE_NAME = 'CENTER_RECTANGLE'
             const LEFT_EDGE_NAME = 'LEFT_EDGE'
             const RIGHT_EDGE_NAME = 'RIGHT_EDGE'
 
             function createRectangle(item,i) {
-
                 var termContainer = new createjs.Container();
                 termContainer.chartIndex = i;
                 $scope.stage.addChild(termContainer);
@@ -107,15 +106,16 @@
 
                 leftEdge = new createjs.Shape();
                 leftEdge.name = 'LEFT_EDGE'
-                leftEdge.graphics.f("Green").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
+                leftEdge.graphics.f("Pink").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
 
                 centerRectangle = new createjs.Shape();
                 centerRectangle.name = 'CENTER_RECTANGLE'
                 centerRectangle.graphics.f("Pink").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight - 7);
 
+
                 rightEdge = new createjs.Shape();
                 rightEdge.name = 'RIGHT_EDGE'
-                rightEdge.graphics.f("Green").rc(itemLength.x + itemLength.w -20 +EDGE_WIDTH, calculateYPosition(i) +3, EDGE_WIDTH, tableSizeInfo.rowHeight -7, 0, 5, 5, 0);
+                rightEdge.graphics.f("Pink").rc(itemLength.x + itemLength.w - EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
 
                 termContainer.addChild(leftEdge);
                 termContainer.addChild(centerRectangle);
@@ -145,14 +145,15 @@
                         e.target.graphics.f("Red").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
                     }
                     else if (e.target.name === CENTER_RECTANGLE_NAME) {
-                        e.target.graphics.f("Red").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight - 7);
+                        e.target.graphics.f("Red").dr(itemLength.x +EDGE_WIDTH, calculateYPosition(i) +3, itemLength.w -EDGE_WIDTH * 2, tableSizeInfo.rowHeight -7);
                     }///
                     else if (e.target.name === RIGHT_EDGE_NAME) {
-                        e.target.graphics.f("Red").rc(itemLength.x + itemLength.w - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
+                        e.target.graphics.f("Red").rc(itemLength.x + itemLength.w - EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight -7, 0, 5, 5, 0);
                     }
                 });
 
                 element.addEventListener("mouseout", function (e) {
+                    //Recovery
                     let i = e.target.parent.chartIndex;
                     let item = $scope.collection[i];
                     let itemDateInfo = {
@@ -162,13 +163,13 @@
                     let itemLength = TimePosSynchronizerService.calculateItemLength(itemDateInfo, chartSizeInfo, termSizeInfo);
 
                     if (e.target.name === LEFT_EDGE_NAME) {
-                        e.target.graphics.f("Green").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
+                        e.target.graphics.f("Pink").rc(itemLength.x, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 5, 0, 0, 5);
                     }
                     else if (e.target.name === CENTER_RECTANGLE_NAME) {
-                        e.target.graphics.f("Pink").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight - 7);
+                        e.target.graphics.f("Pink").dr(itemLength.x + EDGE_WIDTH, calculateYPosition(i) + 3, itemLength.w - EDGE_WIDTH * 2, tableSizeInfo.rowHeight -7);
                     }///
                     else if (e.target.name === RIGHT_EDGE_NAME) {
-                        e.target.graphics.f("Green").rc(itemLength.x + itemLength.w - 20 + EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
+                        e.target.graphics.f("Pink").rc(itemLength.x + itemLength.w - EDGE_WIDTH, calculateYPosition(i) + 3, EDGE_WIDTH, tableSizeInfo.rowHeight - 7, 0, 5, 5, 0);
                     }
                 });
 
@@ -238,46 +239,10 @@
 
                 element.addEventListener("pressup", function (e) {
                     let chartIndex = e.target.parent.chartIndex;
-                    
-                    //let newRectanglePos_x = null;
-                    //let newLeftEdgePos_x = null;
-                    //let newRightEdgePos_x = null;
-                    //let newWidth = null;
-
-                    //_.each(e.target.parent.children, function (n) {
-                    //    if (n.name === CENTER_RECTANGLE_NAME) {
-                    //        newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
-                    //        newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
-                    //    }
-                    //    else if (e.target.name === RIGHT_EDGE_NAME) {
-                    //        newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
-                    //        newLeftEdgePos_x = newRectanglePos_x + EDGE_WIDTH;
-                    //    }
-                    //});
-                    //if (e.target.name === LEFT_EDGE_NAME) {
-                    //    //Move x position of Left Edge
-                    //    newRectanglePos_x = $scope.RECTANGLE_POS_X + ($scope.stage.mouseX - dragStartPointX);
-                    //    newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
-                    //    newWidth = $scope.RECTANGLE_WIDTH - ($scope.stage.mouseX - dragStartPointX);
-                    //    newRightEdgePos_x = newRectanglePos_x + newWidth;
-                    //}
-                    //else if (e.target.name === CENTER_RECTANGLE_NAME) {
-                    //    //Move x position of LeftEdge and CenterRectangle and Right Edge. No change center rectangle width.
-                    //    newRectanglePos_x = $scope.RECTANGLE_POS_X + $scope.stage.mouseX - dragStartPointX;
-                    //    newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
-                    //    newWidth = $scope.RECTANGLE_WIDTH;
-                    //    newRightEdgePos_x = newRectanglePos_x + newWidth;
-                    //}
-                    //else if (e.target.name === RIGHT_EDGE_NAME) {
-                    //    //Move x position of Right Edge
-                    //    newRectanglePos_x = $scope.RECTANGLE_POS_X;
-                    //    newLeftEdgePos_x = newRectanglePos_x - EDGE_WIDTH;
-                    //    newWidth = $scope.RECTANGLE_WIDTH + ($scope.stage.mouseX - dragStartPointX);
-                    //    newRightEdgePos_x = newRectanglePos_x + newWidth;
-
-                    //}
                     if ($scope.NEW_WIDTH >= 0) {
-                        TimePosSynchronizerService.setConvertedTerm($scope.NEW_POS_X, $scope.NEW_WIDTH, $scope.collection[chartIndex], termSizeInfo);
+                        $scope.collection[chartIndex] = TimePosSynchronizerService.setConvertedTerm($scope.NEW_POS_X, $scope.NEW_WIDTH, $scope.collection[chartIndex], termSizeInfo);
+                        e.target.parent.removeAllChildren();
+                        createRectangle($scope.collection[chartIndex], chartIndex);
                     }
                 });
                 //#endregion 

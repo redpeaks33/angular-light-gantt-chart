@@ -65,7 +65,7 @@
                 }
                 ctx_back.clearRect(0, 0, chartSizeInfo.canvasSizeX, chartSizeInfo.canvasSizeY);
                 DrawDateService.drawDate(ctx_back, chartSizeInfo, tableSizeInfo, termSizeInfo);
-                DrawGridService.drawAxis(ctx_back, chartSizeInfo, tableSizeInfo);
+                DrawGridService.drawAxis(ctx_back, chartSizeInfo, tableSizeInfo, termSizeInfo);
             }
 
             //#endregion

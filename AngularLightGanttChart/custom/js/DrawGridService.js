@@ -1,10 +1,10 @@
 ﻿main.service('DrawGridService', function () {
     //#region draw axis
-    this.drawAxis = function (context, chartSizeInfo, tableSizeInfo) {
+    this.drawAxis = function (context, chartSizeInfo, tableSizeInfo, termSizeInfo) {
         let g = new createjs.Graphics();
 
         drawAxisX(g, chartSizeInfo, tableSizeInfo);
-        drawAxisY(g, chartSizeInfo, tableSizeInfo);
+        drawAxisY(g, chartSizeInfo, tableSizeInfo, termSizeInfo);
 
         var s = new createjs.Shape(g);
         s.draw(context);
@@ -29,9 +29,9 @@
         }
     }
 
-    function drawAxisY(g, chartSizeInfo, tableSizeInfo) {
+    function drawAxisY(g, chartSizeInfo, tableSizeInfo, termSizeInfo) {
         let base = chartSizeInfo.axisYPadding;
-        let span = 30;
+        let span = ~~(chartSizeInfo.canvasSizeX / termSizeInfo.termDays);
         let axisCount = ~~(chartSizeInfo.canvasSizeX / span);
         let endP = 0;
         for (let i = 0; i < axisCount; i++) {

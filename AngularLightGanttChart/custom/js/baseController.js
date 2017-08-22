@@ -56,6 +56,7 @@ main.controller('baseController', ['$scope', '$timeout', '$window', function ($s
             education: education,
             start: getRandomDate(moment(), moment().add(15,'days')),
             end: getRandomDate(moment().add(16, 'days'), moment().add(25, 'days')),
+            target: moment().add(18, 'days'),
         };
     }
     //#endregion Random List

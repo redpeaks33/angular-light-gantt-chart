@@ -10,8 +10,8 @@
             height: '=',
         },
         templateUrl: '/custom/html/ganttChart.html',
-        controller: ['$scope', '$timeout', 'DrawGridService', 'DrawDateService','TimePosSynchronizerService',
-            function ($scope, $timeout, DrawGridService, DrawDateService, TimePosSynchronizerService) {
+        controller: ['$scope', '$timeout','$window', 'DrawGridService', 'DrawDateService','TimePosSynchronizerService',
+            function ($scope, $timeout, $window, DrawGridService, DrawDateService, TimePosSynchronizerService) {
             var chartSizeInfo = {
                 canvasSizeX: $scope.width,
                 canvasSizeY: $scope.height,
@@ -256,13 +256,23 @@
                 tableSizeInfo = sizeInfo;
                 initialize();
             })
+
             $scope.$on('setItemInfo', function (e, collection) {
                 $scope.collection = collection;
             });
+
             $scope.$on('setTermInfo', function (e, termInfo) {
                 termSizeInfo = termInfo;
                 drawBackgournd();
                 drawContents();
+            });
+
+            angular.element($window).bind('resize', function () {
+                console.log('resize');
+                //text date
+                //textAlign center
+                //textBaseline bottom
+                
             });
         }],
     };

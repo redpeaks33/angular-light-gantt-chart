@@ -64,8 +64,9 @@
                     };
                 }
                 ctx_back.clearRect(0, 0, chartSizeInfo.canvasSizeX, chartSizeInfo.canvasSizeY);
-                DrawDateService.drawDate(ctx_back, chartSizeInfo, tableSizeInfo, termSizeInfo);
-                DrawGridService.drawAxis(ctx_back, chartSizeInfo, tableSizeInfo, termSizeInfo);
+                $scope.stage_background.removeAllChildren();
+                DrawDateService.drawDate($scope.stage_background, chartSizeInfo, tableSizeInfo, termSizeInfo);
+                DrawGridService.drawAxis($scope.stage_background, chartSizeInfo, tableSizeInfo, termSizeInfo);
             }
 
             //#endregion

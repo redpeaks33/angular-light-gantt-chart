@@ -1,17 +1,15 @@
 ﻿main.service('DrawDateService', function () {
     //#region draw axis
-    this.drawDate = function (context, chartSizeInfo, tableSizeInfo, termSizeInfo) {
-        let g = new createjs.Graphics();
+    this.drawDate = function (stage, chartSizeInfo, tableSizeInfo, termSizeInfo) {
+        var container = new createjs.Container();
+        stage.addChild(container);
 
-        drawDay(g, chartSizeInfo, tableSizeInfo, context, termSizeInfo)
-        drawWeek(g, chartSizeInfo, tableSizeInfo, context, termSizeInfo)
+        drawDay(container, chartSizeInfo, tableSizeInfo,termSizeInfo)
+        drawWeek(container, chartSizeInfo, tableSizeInfo, termSizeInfo)
 
-        var s = new createjs.Shape(g);
-        s.draw(context);
+        stage.update();
     }
-    function drawDay(g, chartSizeInfo, tableSizeInfo, context, termSizeInfo) {
-        context.textAlign = 'center';
-        context.font = "16px Georgia";
+    function drawDay(container, chartSizeInfo, tableSizeInfo, termSizeInfo) {
         let startDate = termSizeInfo.startDate.clone();
         let span = ~~(chartSizeInfo.canvasSizeX / termSizeInfo.termDays);
         for (var i = 0; i < termSizeInfo.termDays; i++) {
@@ -21,19 +19,26 @@
                 let m = startDate.toObject().months + 1;
                 date = m + '/' + date; //  8/1
             }
-            context.fillText(date, i * span + 15, 50);
+            var text = new createjs.Text(date, "20px Arial", "#ff7700");
+            text.x = i * span + 15;
+            text.y = 50;
+            text.textBaseline = "alphabetic";
+
+            container.addChild(text);
             startDate.add(1, 'day');
         }
     }
     
-    function drawWeek(g, chartSizeInfo, tableSizeInfo, context, termSizeInfo) {
-        context.textAlign = 'center';
-        context.font = "16px Georgia";
+    function drawWeek(container, chartSizeInfo, tableSizeInfo, termSizeInfo) {
         let startDate = termSizeInfo.startDate.clone();
         let span = ~~(chartSizeInfo.canvasSizeX / termSizeInfo.termDays);
         for (var i = 0; i < termSizeInfo.termDays / 7; i++) {
             let weekNo = startDate.isoWeek();//get week number;
-            context.fillText('W' + weekNo, i * span * 7 + 105, 25);
+            var text = new createjs.Text('W' + weekNo, "20px Arial", "#ff7700");
+            text.x = i * span * 7 + 105;
+            text.y = 25;
+            text.textBaseline = "alphabetic";
+            container.addChild(text);
             startDate.add(7, 'day');
         }
     }
